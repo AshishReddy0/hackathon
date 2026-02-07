@@ -36,15 +36,16 @@ def rewrite_prompt(code: str, language: str) -> str:
 You are a senior {language} developer.
 
 Your task:
-- Fix small, obvious syntax issues IF present
-- Then optimize the code
+- Fix small, obvious syntax issues
+- Improve security and code safety
+- Preserve original intent as much as possible
 
 Rules:
-- Preserve original logic
-- Do NOT invent new logic or functions
-- Do NOT guess missing intent
-- Only correct errors with ONE clear fix
-- If the code is ambiguous, return it unchanged
+- Do NOT invent new features
+- Do NOT guess missing logic
+- You MAY remove insecure behavior (e.g., printing secrets)
+- You MAY replace hardcoded secrets with environment variables
+- If variable intent is unclear, prefer removal over guessing
 - No explanations
 - No markdown
 
