@@ -119,6 +119,13 @@ async function rewriteCode() {
   const code = document.getElementById("code").value;
   const language = document.getElementById("language").value;
 
+  // ✅ Empty input check (frontend)
+  if (!code.trim()) {
+    document.getElementById("optimized").textContent =
+      "⚠️ Please enter code before requesting optimization.";
+    return;
+  }
+
   document.getElementById("optimized").textContent = "Optimizing code...";
 
   const res = await fetch(`/rewrite`, {
@@ -142,3 +149,4 @@ async function rewriteCode() {
 </body>
 
 </html>
+
