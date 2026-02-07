@@ -121,19 +121,24 @@ async function rewriteCode() {
 
   document.getElementById("optimized").textContent = "Optimizing code...";
 
-  const res = await fetch(`${API}/rewrite`, {
+  const res = await fetch(`/rewrite`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ code, language })
   });
 
   const data = await res.json();
-  document.getElementById("optimized").textContent =
-    data.optimized_code.replace(/```[\s\S]*?```/g, "");
 
+  let cleanCode = data.optimized_code || "";
+  cleanCode = cleanCode
+    .replace(/```[a-zA-Z]*\n?/g, "")
+    .replace(/```/g, "");
+
+  document.getElementById("optimized").textContent = cleanCode;
   hljs.highlightAll();
 }
 </script>
 
 </body>
+
 </html>
