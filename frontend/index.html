@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CodeRefine</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Highlight.js -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen">
+
+  <div class="max-w-6xl mx-auto p-6">
+
+    <!-- LOGO / HEADER -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-extrabold tracking-wide">
+        <span class="text-green-400">Code</span>
+        <span class="text-blue-400">Refine</span>
+      </h1>
+
+      <!-- FIXED UNDERLINE (WIDER) -->
+      <div class="mx-auto mt-3 h-1.5 w-64 bg-white rounded"></div>
+
+      <p class="text-gray-400 mt-3">
+        AI-powered code review & optimization engine
+      </p>
+    </div>
+
+    <!-- INPUT SECTION -->
+    <div class="mb-4">
+      <label class="block mb-1 font-semibold">Language</label>
+      <p class="text-gray-400 text-sm mb-2">
+        Select the programming language of your code.
+      </p>
+      <select id="language"
+        class="bg-gray-800 p-2 rounded w-full border border-gray-700">
+        <option>Python</option>
+        <option>JavaScript</option>
+        <option>Java</option>
+        <option>C++</option>
+      </select>
+    </div>
+
+    <div class="mb-6">
+      <label class="block mb-1 font-semibold">Source Code</label>
+      <p class="text-gray-400 text-sm mb-2">
+        Paste your code to instantly analyze security, performance, and code quality.
+      </p>
+      <textarea id="code"
+        class="w-full h-40 bg-gray-800 p-4 rounded border border-gray-700"
+        placeholder="Paste your code here..."></textarea>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="flex gap-4 mb-10">
+      <button onclick="reviewCode()"
+        class="bg-blue-600 px-5 py-2 rounded font-semibold hover:bg-blue-700 transition">
+        Review Code
+      </button>
+
+      <button onclick="rewriteCode()"
+        class="bg-green-600 px-5 py-2 rounded font-semibold hover:bg-green-700 transition">
+        Rewrite Code
+      </button>
+    </div>
+
+    <!-- OUTPUT SECTION -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- AI REVIEW -->
+      <div>
+        <h2 class="font-bold text-lg mb-1">AI Code Review</h2>
+        <p class="text-gray-400 text-sm mb-3">
+          Issues detected based on security, performance, and code quality best practices.
+        </p>
+        <pre id="review"
+          class="bg-gray-800 p-4 rounded text-sm whitespace-pre-wrap border border-gray-700 min-h-[120px]"></pre>
+      </div>
+
+      <!-- OPTIMIZED CODE (FIXED TO MATCH REVIEW BOX) -->
+      <div>
+        <h2 class="font-bold text-lg mb-1">Optimized Code Output</h2>
+        <p class="text-gray-400 text-sm mb-3">
+          Refactored version of your code with improved safety and readability.
+        </p>
+        <pre id="optimized"
+          class="bg-gray-800 p-4 rounded text-sm border border-gray-700 min-h-[120px] overflow-auto"></pre>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+const API = "";
+
+async function reviewCode() {
+  const code = document.getElementById("code").value;
+  const language = document.getElementById("language").value;
+
+  document.getElementById("review").textContent = "Analyzing code...";
+
+  const res = await fetch(`${API}/review`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code, language })
+  });
+
+  const data = await res.json();
+  document.getElementById("review").textContent = data.review;
+}
+
+async function rewriteCode() {
+  const code = document.getElementById("code").value;
+  const language = document.getElementById("language").value;
+
+  document.getElementById("optimized").textContent = "Optimizing code...";
+
+  const res = await fetch(`${API}/rewrite`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code, language })
+  });
+
+  const data = await res.json();
+  document.getElementById("optimized").textContent =
+    data.optimized_code.replace(/```[\s\S]*?```/g, "");
+
+  hljs.highlightAll();
+}
+</script>
+
+</body>
+</html>
