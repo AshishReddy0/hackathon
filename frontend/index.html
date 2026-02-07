@@ -24,7 +24,6 @@
         <span class="text-blue-400">Refine</span>
       </h1>
 
-      <!-- FIXED UNDERLINE (WIDER) -->
       <div class="mx-auto mt-3 h-1.5 w-64 bg-white rounded"></div>
 
       <p class="text-gray-400 mt-3">
@@ -83,12 +82,22 @@
           class="bg-gray-800 p-4 rounded text-sm whitespace-pre-wrap border border-gray-700 min-h-[120px]"></pre>
       </div>
 
-      <!-- OPTIMIZED CODE (FIXED TO MATCH REVIEW BOX) -->
-      <div>
-        <h2 class="font-bold text-lg mb-1">Optimized Code Output</h2>
+      <!-- OPTIMIZED CODE -->
+      <div class="relative">
+        <div class="flex justify-between items-center mb-1">
+          <h2 class="font-bold text-lg">Optimized Code Output</h2>
+
+          <!-- COPY BUTTON -->
+          <button onclick="copyOptimizedCode()"
+            class="text-sm bg-gray-700 px-3 py-1 rounded hover:bg-gray-600 transition">
+            Copy
+          </button>
+        </div>
+
         <p class="text-gray-400 text-sm mb-3">
           Refactored version of your code with improved safety and readability.
         </p>
+
         <pre id="optimized"
           class="bg-gray-800 p-4 rounded text-sm border border-gray-700 min-h-[120px] overflow-auto"></pre>
       </div>
@@ -119,7 +128,6 @@ async function rewriteCode() {
   const code = document.getElementById("code").value;
   const language = document.getElementById("language").value;
 
-  // ✅ Empty input check (frontend)
   if (!code.trim()) {
     document.getElementById("optimized").textContent =
       "⚠️ Please enter code before requesting optimization.";
@@ -144,9 +152,16 @@ async function rewriteCode() {
   document.getElementById("optimized").textContent = cleanCode;
   hljs.highlightAll();
 }
+
+function copyOptimizedCode() {
+  const text = document.getElementById("optimized").textContent;
+  if (!text.trim()) return;
+
+  navigator.clipboard.writeText(text).then(() => {
+    alert("✅ Optimized code copied to clipboard!");
+  });
+}
 </script>
 
 </body>
-
 </html>
-
