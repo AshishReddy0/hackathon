@@ -43,7 +43,27 @@ def review_code(data: CodeInput):
 
 @app.post("/rewrite")
 def rewrite_code(data: CodeInput):
+
+    # ✅ Empty input check
+    if not data.code.strip():
+        return {
+            "optimized_code": "⚠️ Please enter code before requesting optimization."
+        }
+
+    # ✅ Syntax validation for Python
+    if data.language.lower() == "python":
+        try:
+            compile(data.code, "<string>", "exec")
+        except SyntaxError:
+            return {
+                "optimized_code":
+                "❌ Syntax Error detected.\nPlease fix the code before requesting optimization."
+            }
+
+    # ✅ Call AI only if input is valid
     prompt = rewrite_prompt(data.code, data.language)
     optimized_code = ask_llm(prompt)
+
     return {"optimized_code": optimized_code}
+
 
