@@ -44,26 +44,56 @@ def review_code(data: CodeInput):
 @app.post("/rewrite")
 def rewrite_code(data: CodeInput):
 
-    # ✅ Empty input check
+    # Empty input
     if not data.code.strip():
         return {
             "optimized_code": "⚠️ Please enter code before requesting optimization."
         }
 
-    # ✅ Syntax validation for Python
+    # Try strict validation first (Python only)
     if data.language.lower() == "python":
         try:
             compile(data.code, "<string>", "exec")
+            # Code is valid → normal optimization
+            prompt = rewrite_prompt(data.code, data.language)
+            optimized_code = ask_llm(prompt)
+            return {"optimized_code": optimized_code}
+
         except SyntaxError:
-            return {
-                "optimized_code":
-                "❌ Syntax Error detected.\nPlease fix the code before requesting optimization."
-            }
+            # Attempt small, safe correction
+            fix_prompt = f"""
+You are a Python syntax corrector.
 
-    # ✅ Call AI only if input is valid
-    prompt = rewrite_prompt(data.code, data.language)
-    optimized_code = ask_llm(prompt)
+Fix ONLY small, obvious syntax errors.
+Examples:
+- Print → print
+- Missing parentheses
+- Case sensitivity issues
 
-    return {"optimized_code": optimized_code}
+Rules:
+- Do NOT refactor
+- Do NOT add logic
+- Do NOT change behavior
+- If unsure, return original code
+
+Return ONLY corrected code.
+
+CODE:
+{data.code}
+"""
+            corrected = ask_llm(fix_prompt)
+
+            # Try compiling corrected version
+            try:
+                compile(corrected, "<string>", "exec")
+                # Now optimize corrected code
+                optimize_prompt = rewrite_prompt(corrected, data.language)
+                optimized_code = ask_llm(optimize_prompt)
+                return {"optimized_code": optimized_code}
+            except SyntaxError:
+                return {
+                    "optimized_code":
+                    "❌ Code has ambiguous syntax errors. Please fix them manually."
+                }
 
 
