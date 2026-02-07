@@ -35,16 +35,18 @@ def rewrite_prompt(code: str, language: str) -> str:
     return f"""
 You are a senior {language} developer.
 
-Rewrite the code ONLY if it is valid.
+Your task:
+- Fix small, obvious syntax issues IF present
+- Then optimize the code
 
 Rules:
-- Preserve the original logic EXACTLY
-- Do NOT invent new functions, variables, or behavior
-- Do NOT guess missing logic
-- Do NOT add features
-- If the code is invalid or incomplete, return it unchanged
+- Preserve original logic
+- Do NOT invent new logic or functions
+- Do NOT guess missing intent
+- Only correct errors with ONE clear fix
+- If the code is ambiguous, return it unchanged
 - No explanations
-- No markdown formatting
+- No markdown
 
 CODE:
 {code}
