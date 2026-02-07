@@ -35,18 +35,16 @@ def rewrite_prompt(code: str, language: str) -> str:
     return f"""
 You are a senior {language} developer.
 
-Rewrite the code to be:
-- Secure
-- Clean
-- Production-ready
+Rewrite the code ONLY if it is valid.
 
 Rules:
-- Do NOT hardcode secrets
-- Prefer environment variables
-- Avoid printing sensitive data
-- Add minimal comments only
-
-Return ONLY the rewritten code.
+- Preserve the original logic EXACTLY
+- Do NOT invent new functions, variables, or behavior
+- Do NOT guess missing logic
+- Do NOT add features
+- If the code is invalid or incomplete, return it unchanged
+- No explanations
+- No markdown formatting
 
 CODE:
 {code}
